@@ -1,0 +1,20 @@
+#VRML_SIM R2022b utf8
+# Describe the functionality of your PROTO here.
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/default/protos/SumoInterface.proto"
+
+PROTO SumoProto [
+  field SFString name "sumo interface"
+  field SFInt32 port 8873
+  field SFBool verbose TRUE
+  field SFString networkFiles "/Users/OBSiDIAN/Downloads/Shelves/VSCode/Repositories/THP/ASP2_Korseon/webots/worlds/worldA5_net"
+
+]
+{
+  SumoInterface {
+    name IS name
+    port IS port
+    verbose IS verbose
+    networkFiles IS networkFiles
+  }
+}

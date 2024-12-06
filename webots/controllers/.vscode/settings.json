@@ -1,0 +1,7 @@
+{
+    "python.analysis.extraPaths": [
+        "/Applications/Webots.app/Contents/lib/controller/python39",
+        "/Users/OBSiDIAN/Downloads/Shelves/VSCode/Repositories/The Hyperion Project/markhor/markhor_sdk/python_3_9/communication"
+    ],
+    "python.analysis.typeCheckingMode": "standard"
+}
