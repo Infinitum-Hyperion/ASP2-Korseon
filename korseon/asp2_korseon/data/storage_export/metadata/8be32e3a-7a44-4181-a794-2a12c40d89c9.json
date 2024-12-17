@@ -1,0 +1,19 @@
+{
+  "name": "newDat",
+  "bucket": "X",
+  "metageneration": 1,
+  "generation": 1734435996299,
+  "contentType": "application/octet-stream",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "1e219241-95a1-49ab-b820-f332cafa13d3"
+  ],
+  "etag": "jmsrcbaGl0e4jpNZ78UZuHLLU+g",
+  "customMetadata": {},
+  "timeCreated": "2024-12-17T11:46:36.300Z",
+  "updated": "2024-12-17T11:46:36.300Z",
+  "size": 12,
+  "md5Hash": "jxma66wANsDB+iME7sw9VA==",
+  "crc32c": "2944775729"
+}
