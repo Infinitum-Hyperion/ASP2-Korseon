@@ -19,80 +19,28 @@ import 'package:vector_math/vector_math_64.dart';
 part './kv_db_provider.dart';
 part './blob_db_provider.dart';
 part './firestore_configs.dart';
+part './tasks.dart';
+part './autocloud_project.dart';
 
-late final StreamController<List<Vector3>> pointsStreamController =
-    StreamController<List<Vector3>>();
-late final StreamController<Uint8List> imageByteStreamController =
-    StreamController<Uint8List>();
 final firestoreProvider = FirestoreDBProvider();
 final firebaseStorageProvider = FirebaseStorageDBProvider();
-final AutocloudProject project = AutocloudProject(
-  keyValueDBProvider: firestoreProvider,
-  blobDBProvider: firebaseStorageProvider,
-  markhorConfigs: MarkhorConfigs(
-    liveTelemetryViewModes: {
-      'cam_inputs_1': (BuildContext context) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  PointCloudRendererPane(
-                    width: 500,
-                    height: 500,
-                    pointsStream: pointsStreamController.stream,
-                  ),
-                  ImageRendererPane(
-                    width: 500,
-                    height: 600,
-                    imageByteStream: imageByteStreamController.stream.map(
-                      (byteList) => Image.memory(
-                        byteList,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        );
-      },
-    },
-  ),
-);
-
-Future<void> onNewData(String data) async {
-  final mk.ReplayBuffer<Map<String, Object?>> payloadBuffer =
-      project.createReplayBuffer(
-    'newDataPayload',
-    enabled: true,
-    call: () => jsonDecode(data),
-  );
-  final Map<String, Object?> payload = await payloadBuffer.get();
-  if (payload['msgType'] == 'snapshot') {
-    pointsStreamController.add([
-      for (final point in (payload['lidarFront'] as List).cast<Map>())
-        Vector3(
-          point['x'] as double,
-          point['y'] as double,
-          point['z'] as double,
-        )
-    ]);
-    final res = base64.decode(payload['cameraFront'] as String);
-    imageByteStreamController.add(res);
-  }
-}
-
+late final mk.LCBClient lcbClient;
 void main(List<String> args) async {
+  // Set the autocloud project
   GlobalState.autocloudProject = project;
 
+  // Initialise providers
   await Firebase.initializeApp(options: webOptions);
   await firestoreProvider.init();
   await firebaseStorageProvider.init();
 
-  final mk.LCBClient lcbClient = mk.LCBClient()
-    ..initClient(onMessage: (str) async => await onNewData(str));
-  Future.delayed(const Duration(seconds: 5), () => onNewData(''));
+  // Initialise listeners for the various services
+  lcbClient = mk.LCBClient()
+    ..initClient(onMessage: (str) async => await processMessage(str));
+
+  // For debug mode
+  Future.delayed(const Duration(seconds: 5), () => processStateUpdate({}));
+
+  // Start the autocloud UI
   runApp(const AutocloudInterface());
 }
