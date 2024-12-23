@@ -1,19 +1,21 @@
 import cv2
 import numpy as np
-import sys, os, json, base64
+import sys, os, json, base64, time
 sys.path.append(os.path.abspath("src/modules"))
 from lightweight_communication_bridge import LCB
 
 # Run object detection and return response
 def onMessage(payload: dict[str, object]) -> None:
-    if (payload['code'] == 'exit'):
-        keepAlive = False
-        return
+    print('received message')
     imgBytes = base64.b64decode(payload['image'])
     image = cv2.imdecode(np.frombuffer(imgBytes, dtype=np.uint8), cv2.IMREAD_COLOR)
+    print('running detection')
     result = runDetection(image)
-    _, buffer = cv2.imencode('.jpg', result[0])
-    lcb.send(json.dumps({'source':'object-detection', 'code': 'result', 'image': base64.b64encode(buffer).decode('utf-8')}))
+    resized_image = cv2.resize(result[0], (640, 480))
+    print('encoding result')
+    _, buffer = cv2.imencode('.jpg', resized_image) # result[0]
+    print('sending result')
+    lcb.send({'source':'object-detection', 'code': 'result', 'image': base64.b64encode(buffer).decode('utf-8')})
 
 
 # Set up LCB and register listener
@@ -69,11 +71,11 @@ def runDetection(image) -> tuple:
                 label = f"{classes[class_id]}: {confidence:.2f}"
                 print(label)
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                cv2.putText(image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                cv2.putText(image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
     return (image, detections)
 
 def main():
-    while keepAlive:
-        continue
+    while True:
+        time.sleep(1)
 
 main()

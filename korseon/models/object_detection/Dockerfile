@@ -3,7 +3,7 @@ FROM hdgigante/python-opencv:4.10.0-debian
 RUN mkdir -p /yolo
 RUN wget https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights -P /yolo
 RUN wget https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4.cfg -P /yolo
-RUN wget https://github.com/AlexeyAB/darknet/blob/master/data/coco.names -P /yolo
+RUN wget https://raw.githubusercontent.com/AlexeyAB/darknet/refs/heads/master/data/coco.names -P /yolo
 
 # Add dependencies and set up venv
 RUN apt install -y python3.11-venv

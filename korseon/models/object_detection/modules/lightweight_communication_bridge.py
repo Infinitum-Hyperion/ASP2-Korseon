@@ -9,7 +9,7 @@ WebsocketMessageHandler = Callable[[dict[str, object]], None]
 class LCB:
     def __init__(self, handler: WebsocketMessageHandler, host:str = 'localhost', port:str = '8080') -> None:
         self.handler = handler
-        self.websocket = connect(f"ws://{host}:{port}")
+        self.websocket = connect(f"ws://{host}:{port}", max_size= 10 * 1024 * 1024)
         self.listeningThread = threading.Thread(target=self.listeningLoop)
         self.listeningThread.daemon = True
         self.listeningThread.start()
