@@ -74,7 +74,7 @@ def simulatorLoop():
 
         print(f"Step #{timesteps}")
         if (timesteps & 20 == 0):
-            lcb.send(vstate.snapshot())
+            lcb.send({'source': 'controller', **vstate.snapshot()})
         if (timesteps == 200):
             lcb.close()
     pass

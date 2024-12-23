@@ -1,0 +1,6 @@
+version: '20'
+services:
+  object_detection:
+    image: korseon/object-det:v11
+    ports:
+      - "8080:8080"
