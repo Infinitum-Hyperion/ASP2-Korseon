@@ -4,8 +4,12 @@
 #  from controller import Robot, Motor, DistanceSensor
 import sys
 import os
+import math
+import base64
+from io import BytesIO
+from PIL import Image
 
-sys.path.append(os.path.abspath("/Users/OBSiDIAN/Downloads/Shelves/VSCode/Repositories/The Hyperion Project/markhor/markhor_sdk/python_3_9/communication/"))
+sys.path.append(os.path.abspath("......./markhor/markhor_sdk/python_3_9/telemetry"))
 from lightweight_communication_bridge import LCB
 
 sys.path.append(os.path.abspath("/Applications/Webots.app/Contents/lib/controller/python39/"))
@@ -28,21 +32,32 @@ class VehicleState:
         self.sensor_camera.enable(timestep)
 
     def getProcPointCloud(self):
-        pointCloud = vstate.sensor_lidar.getPointCloud()
+        pointCloud = self.sensor_lidar.getPointCloud()
         pointCloudData: list[dict[str, object]] = []
         for point in pointCloud:
-            pointCloudData.append({
-                'x': point.x,
-                'y': point.y,
-                'z': point.z,
-                'layer_id': point.layer_id,
-                'time': point.time,
-            })
+            if point.x != math.inf and point.x !=-math.inf and point.y != math.inf and point.y !=-math.inf and point.z != math.inf and point.z !=-math.inf:
+                pointCloudData.append({
+                    'x': point.x,
+                    'y': point.y,
+                    'z': point.z,
+                    'layer_id': point.layer_id,
+                    'time': point.time,
+                })
         return pointCloudData
+
+    def getImg(self):
+        img  = Image.frombytes("RGBA", (self.sensor_camera.getWidth(), self.sensor_camera.getHeight()), self.sensor_camera.getImage())
+        return img
+
+    def getProcImgBytes(self, img: Image.Image):
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        return base64.b64encode(buffer.getvalue()).decode('utf-8')
     
     def snapshot(self) -> dict[str, object]:
         return {
-            'cameraFront': self.sensor_camera.getImage(), # bytes
+            'msgType': 'snapshot',
+            'cameraFront': self.getProcImgBytes(self.getImg()), # str(b64(byte stream))
             'lidarFront': self.getProcPointCloud(), # list[dict[str, object]]
         }
 
@@ -58,6 +73,8 @@ def simulatorLoop():
         timesteps += 1
 
         print(f"Step #{timesteps}")
+        if (timesteps & 20 == 0):
+            lcb.send(vstate.snapshot())
         if (timesteps == 200):
             lcb.close()
     pass

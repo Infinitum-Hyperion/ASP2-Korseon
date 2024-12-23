@@ -22,6 +22,8 @@ part './firestore_configs.dart';
 
 late final StreamController<List<Vector3>> pointsStreamController =
     StreamController<List<Vector3>>();
+late final StreamController<Uint8List> imageByteStreamController =
+    StreamController<Uint8List>();
 final firestoreProvider = FirestoreDBProvider();
 final firebaseStorageProvider = FirebaseStorageDBProvider();
 final AutocloudProject project = AutocloudProject(
@@ -36,9 +38,19 @@ final AutocloudProject project = AutocloudProject(
               Row(
                 children: [
                   PointCloudRendererPane(
-                    width: 800,
+                    width: 500,
                     height: 500,
                     pointsStream: pointsStreamController.stream,
+                  ),
+                  ImageRendererPane(
+                    width: 500,
+                    height: 600,
+                    imageByteStream: imageByteStreamController.stream.map(
+                      (byteList) => Image.memory(
+                        byteList,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
                   ),
                 ],
               )
@@ -54,6 +66,7 @@ Future<void> onNewData(String data) async {
   final mk.ReplayBuffer<Map<String, Object?>> payloadBuffer =
       project.createReplayBuffer(
     'newDataPayload',
+    enabled: true,
     call: () => jsonDecode(data),
   );
   final Map<String, Object?> payload = await payloadBuffer.get();
@@ -66,6 +79,8 @@ Future<void> onNewData(String data) async {
           point['z'] as double,
         )
     ]);
+    final res = base64.decode(payload['cameraFront'] as String);
+    imageByteStreamController.add(res);
   }
 }
 
