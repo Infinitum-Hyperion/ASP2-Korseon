@@ -6,6 +6,7 @@ from lightweight_communication_bridge import LCB
 
 # Run object detection and return response
 def onMessage(payload: dict[str, object]) -> None:
+    if (payload['dest']!='object-detection'): return
     print('received message')
     imgBytes = base64.b64decode(payload['image'])
     image = cv2.imdecode(np.frombuffer(imgBytes, dtype=np.uint8), cv2.IMREAD_COLOR)

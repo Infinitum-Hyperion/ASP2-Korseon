@@ -6,6 +6,8 @@ late final StreamController<Uint8List> imageByteStreamController =
     StreamController<Uint8List>();
 late final StreamController<Uint8List> objDetImageStreamController =
     StreamController<Uint8List>();
+late final StreamController<Uint8List> roadSegImageStreamController =
+    StreamController<Uint8List>();
 
 final AutocloudProject project = AutocloudProject(
   keyValueDBProvider: firestoreProvider,
@@ -36,15 +38,29 @@ final AutocloudProject project = AutocloudProject(
                 ],
               ),
               const SizedBox(height: 20),
-              ImageRendererPane(
-                width: 500,
-                height: 600,
-                imageByteStream: objDetImageStreamController.stream.map(
-                  (byteList) => Image.memory(
-                    byteList,
-                    fit: BoxFit.fitWidth,
+              Row(
+                children: [
+                  ImageRendererPane(
+                    width: 500,
+                    height: 600,
+                    imageByteStream: objDetImageStreamController.stream.map(
+                      (byteList) => Image.memory(
+                        byteList,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
                   ),
-                ),
+                  ImageRendererPane(
+                    width: 500,
+                    height: 600,
+                    imageByteStream: roadSegImageStreamController.stream.map(
+                      (byteList) => Image.memory(
+                        byteList,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                  ),
+                ],
               )
             ],
           ),
