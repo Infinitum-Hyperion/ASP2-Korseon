@@ -1,71 +1,43 @@
-part of korseon.core;
-
-late final StreamController<List<Vector3>> pointsStreamController =
-    StreamController<List<Vector3>>();
-late final StreamController<Uint8List> imageByteStreamController =
-    StreamController<Uint8List>();
-late final StreamController<Uint8List> objDetImageStreamController =
-    StreamController<Uint8List>();
-late final StreamController<Uint8List> roadSegImageStreamController =
-    StreamController<Uint8List>();
+import 'package:autocloud_sdk/autocloud_sdk.dart';
 
 final AutocloudProject project = AutocloudProject(
-  keyValueDBProvider: firestoreProvider,
-  blobDBProvider: firebaseStorageProvider,
-  markhorConfigs: MarkhorConfigs(
-    liveTelemetryViewModes: {
-      'cam_inputs_1': (BuildContext context) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  PointCloudRendererPane(
-                    width: 500,
-                    height: 500,
-                    pointsStream: pointsStreamController.stream,
-                  ),
-                  ImageRendererPane(
-                    width: 500,
-                    height: 600,
-                    imageByteStream: imageByteStreamController.stream.map(
-                      (byteList) => Image.memory(
-                        byteList,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  ImageRendererPane(
-                    width: 500,
-                    height: 600,
-                    imageByteStream: objDetImageStreamController.stream.map(
-                      (byteList) => Image.memory(
-                        byteList,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ),
-                  ImageRendererPane(
-                    width: 500,
-                    height: 600,
-                    imageByteStream: roadSegImageStreamController.stream.map(
-                      (byteList) => Image.memory(
-                        byteList,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        );
-      },
-    },
-  ),
+  label: 'asp2-korseon',
 );
+bool projectHasInit = false;
+late final AutocloudArtifact mainArtifact;
+late final AutocloudArtifact tasksArtifact;
+late final AutocloudArtifact vehicleControllerArtifact;
+late final AutocloudArtifact objectDetectionArtifact;
+late final AutocloudArtifact roadSegmentationArtifact;
+void initProject() {
+  if (projectHasInit) return;
+  mainArtifact = project.addArtifact(
+    label: 'korseon-main',
+    socket: const ArtifactSocket(host: '0.0.0.0', port: 8081),
+  );
+
+  tasksArtifact = project.addArtifact(label: 'tasks');
+
+  vehicleControllerArtifact = project.addArtifact(
+    label: 'vehicle-controller',
+    socket: const ArtifactSocket(host: '0.0.0.0', port: 8080),
+  );
+
+  objectDetectionArtifact = project.addArtifact(
+    label: 'object-detection',
+    socket: const ArtifactSocket(host: '0.0.0.0', port: 8079),
+  );
+
+  roadSegmentationArtifact = project.addArtifact(
+    label: 'road-segmentation',
+    socket: const ArtifactSocket(host: '0.0.0.0', port: 8078),
+  );
+
+  mainArtifact;
+  tasksArtifact;
+  vehicleControllerArtifact;
+  objectDetectionArtifact;
+  roadSegmentationArtifact;
+
+  projectHasInit = true;
+}

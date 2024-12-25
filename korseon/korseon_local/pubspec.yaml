@@ -8,7 +8,8 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-
+  asp2_korseon:
+    path: ../asp2_korseon
   markhor_sdk:
     path: ../../../../The Hyperion Project/markhor/markhor_sdk
 

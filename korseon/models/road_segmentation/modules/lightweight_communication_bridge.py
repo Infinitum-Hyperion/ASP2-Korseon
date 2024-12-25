@@ -7,7 +7,7 @@ from websockets import ConnectionClosedOK
 WebsocketMessageHandler = Callable[[dict[str, object]], None]
 
 class LCB:
-    def __init__(self, handler: WebsocketMessageHandler, host:str = 'localhost', port:str = '8080') -> None:
+    def __init__(self, handler: WebsocketMessageHandler, host:str, port:str) -> None:
         self.handler = handler
         self.websocket = connect(f"ws://{host}:{port}", max_size= 10 * 1024 * 1024)
         self.listeningThread = threading.Thread(target=self.listeningLoop)
@@ -22,7 +22,8 @@ class LCB:
             except ConnectionClosedOK:
                 break
 
-    def send(self, payload: dict[str, object]):
+    def send(self, destination:str, payload: dict[str, object]):
+        self.websocket.send(f"preflight:{destination}")
         self.websocket.send(json.dumps(payload))
 
     def close(self):

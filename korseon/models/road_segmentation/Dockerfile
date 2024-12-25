@@ -12,7 +12,6 @@ COPY ./requirements.txt ./
 RUN pip install --no-cache-dir -r ./requirements.txt
 EXPOSE 8080
 
-COPY img.png .
 COPY fast_scnn_citys.pth .
 COPY ./data_loader/cityscapes.py ./data_loader/
 COPY ./data_loader/__init__.py ./data_loader/__init__.py

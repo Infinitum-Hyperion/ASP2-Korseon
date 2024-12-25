@@ -6,7 +6,6 @@ from lightweight_communication_bridge import LCB
 
 # Run object detection and return response
 def onMessage(payload: dict[str, object]) -> None:
-    if (payload['dest']!='object-detection'): return
     print('received message')
     imgBytes = base64.b64decode(payload['image'])
     image = cv2.imdecode(np.frombuffer(imgBytes, dtype=np.uint8), cv2.IMREAD_COLOR)
@@ -16,11 +15,11 @@ def onMessage(payload: dict[str, object]) -> None:
     print('encoding result')
     _, buffer = cv2.imencode('.jpg', resized_image) # result[0]
     print('sending result')
-    lcb.send({'source':'object-detection', 'code': 'result', 'image': base64.b64encode(buffer).decode('utf-8')})
+    lcb.send('asp2-korseon.korseon-main',{'source':'asp2-korseon.object-detection', 'code': 'result', 'image': base64.b64encode(buffer).decode('utf-8')})
 
 
 # Set up LCB and register listener
-lcb = LCB(onMessage, host='host.docker.internal', port='8080')
+lcb = LCB(onMessage, host='host.docker.internal', port='8079')
 keepAlive = True
 
 # YOLO configs

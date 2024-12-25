@@ -3,11 +3,13 @@ library korseon.local;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:markhor_sdk/standalone/lightweight_communication_bridge_server.dart';
+import 'package:asp2_korseon/autocloud_project.dart';
+import 'package:markhor_sdk/standalone/artifact_discovery.dart';
 
 part './secrets.dart';
 
 void main(List<String> args) async {
+  // Launch the Autocloud interface
   final Process autocloudInterface = await Process.start(
     '/usr/local/bin/flutter/bin/flutter',
     ['run', '-d', 'chrome'],
@@ -15,11 +17,16 @@ void main(List<String> args) async {
     mode: ProcessStartMode.inheritStdio,
   );
 
-  final lcb = LightweightCommunicationBridgeForwarder()..initServers();
+  // Launch the artifact discovery service
+  initProject();
+  final ArtifactDiscoveryService discoveryService =
+      ArtifactDiscoveryService(project: project)..init();
+
   await autocloudInterface.exitCode;
+  // Shut down artifact discovery service gracefully
   stdin.transform(utf8.decoder).listen((key) async {
     if (key.trim() == 'exit') {
-      await lcb.closeServers();
+      await discoveryService.closeServers();
       exit(0);
     }
   });

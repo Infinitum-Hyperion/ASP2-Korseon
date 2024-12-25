@@ -19,7 +19,7 @@ from controller import Lidar
 def onMsg(payload: dict[str, object]) -> None:
     pass
 
-lcb = LCB(onMsg)
+lcb = LCB(onMsg, '0.0.0.0', '8080')
 driver = Driver()
 
 class VehicleState:
@@ -74,7 +74,7 @@ def simulatorLoop():
 
         print(f"Step #{timesteps}")
         if (timesteps & 20 == 0):
-            lcb.send({'source': 'controller', **vstate.snapshot()})
+            lcb.send('korseon-main', {'source': 'controller', **vstate.snapshot()})
         if (timesteps == 200):
             lcb.close()
     pass

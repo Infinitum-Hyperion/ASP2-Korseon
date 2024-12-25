@@ -15,12 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:markhor_sdk/markhor_sdk.dart' as mk;
 import 'package:markhor_ui/panes/panes.dart';
 import 'package:vector_math/vector_math_64.dart';
+import 'autocloud_project.dart';
 
 part './kv_db_provider.dart';
 part './blob_db_provider.dart';
 part './firestore_configs.dart';
 part './tasks.dart';
-part './autocloud_project.dart';
+part 'autocloud_markhor_configs.dart';
 
 final firestoreProvider = FirestoreDBProvider();
 final firebaseStorageProvider = FirebaseStorageDBProvider();
@@ -28,6 +29,8 @@ late final mk.LCBClient lcbClient;
 void main(List<String> args) async {
   // Set the autocloud project
   GlobalState.autocloudProject = project;
+  project.markhorConfigs = markhorConfigs;
+  initProject();
 
   // Initialise providers
   await Firebase.initializeApp(options: webOptions);
@@ -35,8 +38,8 @@ void main(List<String> args) async {
   await firebaseStorageProvider.init();
 
   // Initialise listeners for the various services
-  lcbClient = mk.LCBClient()
-    ..initClient(onMessage: (str) async => await processMessage(str));
+  lcbClient = mainArtifact.socket!
+      .spawnClient((str) async => await processMessage(str));
 
   // For debug mode
   Future.delayed(const Duration(seconds: 5), () => processStateUpdate({}));
