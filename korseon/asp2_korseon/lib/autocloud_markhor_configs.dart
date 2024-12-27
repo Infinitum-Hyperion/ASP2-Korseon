@@ -12,22 +12,23 @@ late final StreamController<Uint8List> roadSegImageStreamController =
 final MarkhorConfigs markhorConfigs = MarkhorConfigs(
   keyValueDBProvider: firestoreProvider,
   blobDBProvider: firebaseStorageProvider,
-  contextProvider: mk.DartContextProvider(logger: mk.OTelLogger()),
+  contextProvider: mk.ContextProvider(artifact: mainArtifact),
   liveTelemetryViewModes: {
     'cam_inputs_1': (BuildContext context) {
       return SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               children: [
                 PointCloudRendererPane(
                   width: 500,
-                  height: 500,
+                  height: 300,
                   pointsStream: pointsStreamController.stream,
                 ),
                 ImageRendererPane(
                   width: 500,
-                  height: 600,
+                  height: 300,
                   imageByteStream: imageByteStreamController.stream.map(
                     (byteList) => Image.memory(
                       byteList,
@@ -42,7 +43,7 @@ final MarkhorConfigs markhorConfigs = MarkhorConfigs(
               children: [
                 ImageRendererPane(
                   width: 500,
-                  height: 600,
+                  height: 300,
                   imageByteStream: objDetImageStreamController.stream.map(
                     (byteList) => Image.memory(
                       byteList,
@@ -52,7 +53,7 @@ final MarkhorConfigs markhorConfigs = MarkhorConfigs(
                 ),
                 ImageRendererPane(
                   width: 500,
-                  height: 600,
+                  height: 300,
                   imageByteStream: roadSegImageStreamController.stream.map(
                     (byteList) => Image.memory(
                       byteList,

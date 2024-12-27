@@ -29,8 +29,8 @@ late final mk.LCBClient lcbClient;
 void main(List<String> args) async {
   // Set the autocloud project
   GlobalState.autocloudProject = project;
-  project.markhorConfigs = markhorConfigs;
   initProject();
+  project.markhorConfigs = markhorConfigs;
 
   // Initialise providers
   await Firebase.initializeApp(options: webOptions);

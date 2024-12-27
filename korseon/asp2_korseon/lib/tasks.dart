@@ -1,23 +1,26 @@
 part of korseon.core;
 
 Future<void> processMessage(String data) async {
-  AutocloudMethod(
-      label: 'processMessage', contextProvider: tasksArtifact.contextProvider);
-
-  final Map<String, Object?> msg = jsonDecode(data);
-  if (msg['source'] == vehicleControllerArtifact.id) {
-    await processStateUpdate(msg);
-  } else if (msg['source'] == objectDetectionArtifact.id) {
-    await processObjectDetectionResults(msg);
-  } else if (msg['source'] == roadSegmentationArtifact.id) {
-    await processRoadSegmentationResults(msg);
-  } else {
-    print('Ignored message (no source specified)');
-    if (msg.containsKey('image')) {
-      msg.remove('image');
-    }
-    print(msg);
-  }
+  await AutocloudMethod<void>(
+    label: 'processMessage',
+    contextProvider: tasksArtifact.contextProvider,
+    method: (log) async {
+      final Map<String, Object?> msg = jsonDecode(data);
+      if (msg['source'] == vehicleControllerArtifact.id) {
+        await processStateUpdate(msg);
+      } else if (msg['source'] == objectDetectionArtifact.id) {
+        await processObjectDetectionResults(msg);
+      } else if (msg['source'] == roadSegmentationArtifact.id) {
+        await processRoadSegmentationResults(msg);
+      } else {
+        print('Ignored message (no source specified)');
+        if (msg.containsKey('image')) {
+          msg.remove('image');
+        }
+        print(msg);
+      }
+    },
+  ).run();
 }
 
 Future<void> processStateUpdate(Map<String, Object?> data) async {
@@ -40,13 +43,15 @@ Future<void> processStateUpdate(Map<String, Object?> data) async {
     final res = base64.decode(payload['cameraFront'] as String);
     imageByteStreamController.add(res);
   }
-  lcbClient.send(
-      destination: objectDetectionArtifact,
-      payload: jsonEncode({'image': payload['cameraFront']}));
 
-  lcbClient.send(
+  /* lcbClient.send(
+      destination: objectDetectionArtifact,
+      payload: jsonEncode({'image': payload['cameraFront']})); */
+  await processObjectDetectionResults({});
+  await processRoadSegmentationResults({});
+  /* lcbClient.send(
       destination: roadSegmentationArtifact,
-      payload: jsonEncode({'image': payload['cameraFront']}));
+      payload: jsonEncode({'image': payload['cameraFront']})); */
 }
 
 Future<void> processObjectDetectionResults(Map<String, Object?> data) async {
