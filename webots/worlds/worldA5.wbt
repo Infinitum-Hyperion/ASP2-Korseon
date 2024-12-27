@@ -29,8 +29,8 @@ WorldInfo {
   lineScale 2
 }
 Viewpoint {
-  orientation 0.05338898397491469 0.039225403146498944 -0.9978030788377639 1.881149870199637
-  position 88.47727382324577 -11.448452186263035 3.9511279529967593
+  orientation 0.24498698104439876 0.08853311242718101 -0.965475668840343 2.4712349744720212
+  position 95.55428700745586 -8.603075577692497 19.286441821231893
   near 3
 }
 TexturedBackground {
@@ -5615,8 +5615,8 @@ DEF Spikersuppa Transform {
   ]
 }
 DEF SUMO_VEHICLE0 Solid {
-  translation -150.6618403624536 80.83490697211859 0.358
-  rotation 0 0 1 0.4608907087709088
+  translation -145.6821997775053 83.64482649967995 0.358
+  rotation 0 0 1 0.13898473533971062
   children [
     LincolnMKZSimple {
       translation -2.85 0 0
@@ -5627,12 +5627,10 @@ DEF SUMO_VEHICLE0 Solid {
     }
   ]
   name "1"
-  linearVelocity 9.153751075272822 5.16529324919368 0
-  angularVelocity 0 0 -0.5917389217485303
 }
 DEF SUMO_VEHICLE1 Solid {
-  translation -47.34276349802428 29.04479366661374 0.4
-  rotation 0 0 1 2.634926307419223
+  translation -47.34800720980105 29.04774216951603 0.4
+  rotation 0 0 1 2.6348211255386094
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5643,12 +5641,10 @@ DEF SUMO_VEHICLE1 Solid {
     }
   ]
   name "SUMO vehicle 1"
-  linearVelocity -0.009639176060289856 0.0054200420997929655 0
-  angularVelocity 0 0 -0.00019334904524548335
 }
 DEF SUMO_VEHICLE2 Solid {
-  translation 96.08930503480278 267.4801488450258 0.4
-  rotation 0 0 1 1.0198717854830033
+  translation 109.784200015607 288.9699692491667 0.4
+  rotation 0 0 1 1.0234183148817593
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5659,12 +5655,10 @@ DEF SUMO_VEHICLE2 Solid {
     }
   ]
   name "SUMO vehicle 2"
-  linearVelocity 25.17443930294892 39.503346331140676 0
-  angularVelocity 0 0 0.006519355512417668
 }
 DEF SUMO_VEHICLE3 Solid {
-  translation -91.26029045649996 126.71167234571753 0.4
-  rotation 0 0 1 1.1192379464463984
+  translation -87.37002186453111 132.26601798793206 0.4
+  rotation 0 0 1 1.1525379109954768
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5675,12 +5669,10 @@ DEF SUMO_VEHICLE3 Solid {
     }
   ]
   name "SUMO vehicle 3"
-  linearVelocity 7.151229029354624 10.21019419524741 0
-  angularVelocity 0 0 0.06121317012698135
 }
 DEF SUMO_VEHICLE4 Solid {
-  translation 78.20480366043256 -36.379782137422055 0.358
-  rotation 0 0 1 2.6658114502465726
+  translation 73.7659 -34.0922 0.358
+  rotation 0 0 1 2.6658114502538455
   children [
     LincolnMKZSimple {
       translation -2.85 0 0
@@ -5691,12 +5683,10 @@ DEF SUMO_VEHICLE4 Solid {
     }
   ]
   name "SUMO vehicle 4"
-  linearVelocity -0.0033143087406273253 0.0017077317928126945 0
-  angularVelocity 0 0 1.3367085216486885e-11
 }
 DEF SUMO_VEHICLE5 Solid {
-  translation 50.59750362284978 197.55761062533006 0.4
-  rotation 0 0 1 0.9621531602703126
+  translation 65.60961406628897 220.3506616211756 0.4
+  rotation 0 0 1 0.956921250948141
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5707,12 +5697,10 @@ DEF SUMO_VEHICLE5 Solid {
     }
   ]
   name "SUMO vehicle 5"
-  linearVelocity 27.595791256321967 41.898990801186926 0
-  angularVelocity 0 0 -0.009617480371639786
 }
 DEF SUMO_VEHICLE6 Solid {
-  translation 100.83982461190337 125.04407084322139 0.4
-  rotation 0 0 1 0.206063601774777
+  translation 128.28864010381383 128.00541757261465 0.4
+  rotation 0 0 1 0.2275421545249672
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5723,12 +5711,10 @@ DEF SUMO_VEHICLE6 Solid {
     }
   ]
   name "SUMO vehicle 6"
-  linearVelocity 50.45738141895297 5.443652076090757 0
-  angularVelocity 0 0 0.03948263373197314
 }
 DEF SUMO_VEHICLE7 Solid {
-  translation 97.31198018292395 -178.4883147516156 0.317
-  rotation 0 0 -1 1.9887604193469024
+  translation 84.4612205589273 -207.44156697026546 0.317
+  rotation 0 0 -1 1.988810903413363
   children [
     ToyotaPriusSimple {
       translation -2.85 0 0
@@ -5739,12 +5725,10 @@ DEF SUMO_VEHICLE7 Solid {
     }
   ]
   name "SUMO vehicle 7"
-  linearVelocity -23.622719897052775 -53.222890107812226 0
-  angularVelocity 0 0 -9.280159275704136e-05
 }
 DEF SUMO_VEHICLE8 Solid {
-  translation 76.65853857010808 227.01428903285463 0.4
-  rotation 0 0 1 0.6692915739239962
+  translation 94.9954464532127 252.7887680828716 0.4
+  rotation 0 0 1 0.6075889675612666
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5755,12 +5739,10 @@ DEF SUMO_VEHICLE8 Solid {
     }
   ]
   name "SUMO vehicle 8"
-  linearVelocity 33.70755125570703 47.37955707723749 0
-  angularVelocity 0 0 -0.11342390875501707
 }
 DEF SUMO_VEHICLE9 Solid {
-  translation 135.844831014487 -95.80170135144272 0.4
-  rotation 0 0 1 1.1477023809612172
+  translation 145.96942862106243 -73.14682542882286 0.4
+  rotation 0 0 1 1.147061939948823
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5771,12 +5753,10 @@ DEF SUMO_VEHICLE9 Solid {
     }
   ]
   name "SUMO vehicle 9"
-  linearVelocity 18.61139265914602 41.64499250481584 0
-  angularVelocity 0 0 -0.0011772812727839366
 }
 DEF SUMO_VEHICLE10 Solid {
-  translation -75.66293947348991 79.21663311477126 0.358
-  rotation 0 0 1 3.00921774160902
+  translation -97.31145169835872 82.13467893322061 0.358
+  rotation 0 0 1 3.0095640173527145
   children [
     LincolnMKZSimple {
       translation -2.85 0 0
@@ -5787,12 +5767,10 @@ DEF SUMO_VEHICLE10 Solid {
     }
   ]
   name "SUMO vehicle 10"
-  linearVelocity -39.79505923689123 5.364054813325866 0
-  angularVelocity 0 0 0.0006365362935634167
 }
 DEF SUMO_VEHICLE11 Solid {
-  translation -79.40542896583719 -13.088848601078404 0.374
-  rotation 0 0 -1 2.009973805958212
+  translation -83.94684228427613 -21.283009367711966 0.374
+  rotation 0 0 -1 1.9958895915780168
   children [
     BmwX5Simple {
       translation -2.85 0 0
@@ -5803,12 +5781,10 @@ DEF SUMO_VEHICLE11 Solid {
     }
   ]
   name "SUMO vehicle 11"
-  linearVelocity -8.348186247130371 -15.062795526899942 0
-  angularVelocity 0 0 0.025890099963596924
 }
 DEF SUMO_VEHICLE12 Solid {
-  translation -542.1996886816182 254.94067841624 0.317
-  rotation 0 0 1 2.830985358933883
+  translation -566.0505616965834 266.1820276268573 0.317
+  rotation 0 0 1 2.838088523661326
   children [
     ToyotaPriusSimple {
       translation -2.85 0 0
@@ -5819,12 +5795,10 @@ DEF SUMO_VEHICLE12 Solid {
     }
   ]
   name "SUMO vehicle 12"
-  linearVelocity -43.84351657162753 20.66424487245797 0
-  angularVelocity 0 0 0.013057288101911979
 }
 DEF SUMO_VEHICLE13 Solid {
-  translation -10.225116845834517 113.38422590938906 0.317
-  rotation 0 0 1 0.17145580370962502
+  translation -10.13429187493957 113.39940613947688 0.317
+  rotation 0 0 1 0.17254207780824177
   children [
     ToyotaPriusSimple {
       translation -2.85 0 0
@@ -5835,12 +5809,10 @@ DEF SUMO_VEHICLE13 Solid {
     }
   ]
   name "SUMO vehicle 13"
-  linearVelocity 0.1669576670862849 0.02790483472047356 0
-  angularVelocity 0 0 0.001996827387165112
 }
 DEF SUMO_VEHICLE14 Solid {
-  translation -808.2274959672542 -99.5734175067344 0.358
-  rotation 0 0 1 2.146779117049981
+  translation -832.8394868667615 -106.46704979514246 0.358
+  rotation 0 0 1 2.5654093832506843
   children [
     LincolnMKZSimple {
       translation -2.85 0 0
@@ -5851,12 +5823,10 @@ DEF SUMO_VEHICLE14 Solid {
     }
   ]
   name "SUMO vehicle 14"
-  linearVelocity -45.242630329976095 -12.672118177220852 0
-  angularVelocity 0 0 0.7695409305159996
 }
 DEF SUMO_VEHICLE15 Solid {
-  translation -853.9019362865137 277.8505872900932 0.36
-  rotation 0 0 1 2.644932085966338
+  translation -881.7473816358461 292.94210292650985 0.36
+  rotation 0 0 0.9999999999999999 2.6449320859663374
   children [
     TeslaModel3Simple {
       translation -2.85 0 0
@@ -5867,12 +5837,10 @@ DEF SUMO_VEHICLE15 Solid {
     }
   ]
   name "SUMO vehicle 15"
-  linearVelocity -51.186480421566785 27.741756684589944 0
-  angularVelocity 0 0 -1.3322676295501878e-14
 }
 DEF SUMO_VEHICLE16 Solid {
-  translation 539.6136384347072 850.0978376131865 0.374
-  rotation 0 0 1 1.9497669838543854
+  translation 559.7896053257733 877.4377299388341 0.374
+  rotation 0 0 1 1.7549745312322127
   children [
     BmwX5Simple {
       translation -2.85 0 0
@@ -5883,12 +5851,10 @@ DEF SUMO_VEHICLE16 Solid {
     }
   ]
   name "SUMO vehicle 16"
-  linearVelocity 37.08817443210805 50.25715501038263 0
-  angularVelocity 0 0 -0.3580743614378168
 }
 DEF SUMO_VEHICLE17 Solid {
-  translation 289.7917410757883 199.9925350773412 0.4
-  rotation 0 0 1 0.31970941124753643
+  translation 304.6081995078991 203.9184602021999 0.4
+  rotation 0 0 0.9999999999999999 0.3219393150485881
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5899,8 +5865,6 @@ DEF SUMO_VEHICLE17 Solid {
     }
   ]
   name "SUMO vehicle 17"
-  linearVelocity 27.236136823733048 7.216774126578614 0
-  angularVelocity 0 0 0.004099087869580131
 }
 DEF SUMO_VEHICLE18 Solid {
   translation 92.76080552186228 6.733595868178304 0.317
@@ -5931,8 +5895,8 @@ DEF SUMO_VEHICLE19 Solid {
   name "SUMO vehicle 19"
 }
 DEF SUMO_VEHICLE20 Solid {
-  translation -662.1640747212566 435.937705593874 0.374
-  rotation 0 0 -1 2.2581569294798283
+  translation -680.444113726421 447.4955495654572 0.374
+  rotation 0 0 -1 2.3726254006580034
   children [
     BmwX5Simple {
       translation -2.85 0 0
@@ -5943,12 +5907,10 @@ DEF SUMO_VEHICLE20 Solid {
     }
   ]
   name "SUMO vehicle 20"
-  linearVelocity -33.60301287714023 21.246036712468808 0
-  angularVelocity 0 0 -0.21041998378340754
 }
 DEF SUMO_VEHICLE21 Solid {
-  translation -45.26803265580449 297.02446158853417 0.317
-  rotation 0 0 -1 2.9149603211682775
+  translation -49.61696620422245 305.5807528934941 0.317
+  rotation 0 0 -0.9999999999999999 1.2829603211682779
   children [
     ToyotaPriusSimple {
       translation -2.85 0 0
@@ -5959,12 +5921,10 @@ DEF SUMO_VEHICLE21 Solid {
     }
   ]
   name "SUMO vehicle 21"
-  linearVelocity -7.994363140474263 15.728476663529136 0
-  angularVelocity 0 0 2.9999999999999982
 }
 DEF SUMO_VEHICLE22 Solid {
-  translation 629.2370066479504 -347.62314211571453 0.4
-  rotation 0 0 -1 2.480770671723409
+  translation 640.3886202354281 -358.1876447483816 0.4
+  rotation 0 0 1 2.894138168118072
   children [
     MercedesBenzSprinterSimple {
       translation -2.85 0 0
@@ -5975,8 +5935,6 @@ DEF SUMO_VEHICLE22 Solid {
     }
   ]
   name "SUMO vehicle 22"
-  linearVelocity 20.49928968286253 -19.420041604167366 0
-  angularVelocity 0 0 -1.6696258590774082
 }
 DEF SUMO_VEHICLE23 Solid {
   translation 99.8465735179757 19.957090717651372 0.358
@@ -6003,8 +5961,8 @@ DEF SUMO_VEHICLE24 Solid {
   name "SUMO vehicle 24"
 }
 DEF SUMO_VEHICLE25 Solid {
-  translation 617.913220853418 842.0708129620074 0.36
-  rotation 0 0 1 2.1869204663405895
+  translation 628.600659819511 862.7967169872875 0.36
+  rotation 0 0 -0.9999999999999999 2.46426484083901
   children [
     TeslaModel3Simple {
       translation -2.85 0 0
@@ -6015,8 +5973,6 @@ DEF SUMO_VEHICLE25 Solid {
     }
   ]
   name "SUMO vehicle 25"
-  linearVelocity 19.64602751119969 38.09908828176649 0
-  angularVelocity 0 0 2.9999999999999982
 }
 DEF SUMO_VEHICLE26 Solid {
   translation 10000 260 0.5
@@ -6033,7 +5989,7 @@ DEF SUMO_VEHICLE26 Solid {
   name "SUMO vehicle 26"
 }
 DEF SUMO_VEHICLE27 Solid {
-  translation 1015.2038720805814 -486.3484770365726 0.36
+  translation 1040.3029673845353 -498.5463891409657 0.36
   rotation 0 0 -1 0.4523792882709662
   children [
     TeslaModel3Simple {
@@ -6045,11 +6001,9 @@ DEF SUMO_VEHICLE27 Solid {
     }
   ]
   name "SUMO vehicle 27"
-  linearVelocity 46.138042838148294 -22.422632544840727 0
-  angularVelocity 0 0 8.881784197001252e-15
 }
 DEF SUMO_VEHICLE28 Solid {
-  translation 1248.3293993527002 -610.194462243636 0.4
+  translation 1274.669292114664 -627.4260502678953 0.4
   rotation 0 0 -1 0.5793229072130032
   children [
     MercedesBenzSprinterSimple {
@@ -6061,11 +6015,10 @@ DEF SUMO_VEHICLE28 Solid {
     }
   ]
   name "SUMO vehicle 28"
-  linearVelocity 48.41892051831877 -31.675713279886963 0
 }
 DEF SUMO_VEHICLE29 Solid {
-  translation -309.73983151612225 431.35122395121533 0.36
-  rotation 0 0 1 0.8051571451581201
+  translation -316.2900285462948 439.55774267476966 0.36
+  rotation 0 0 -0.9999999999999999 0.8268428548418733
   children [
     TeslaModel3Simple {
       translation -2.85 0 0
@@ -6076,12 +6029,10 @@ DEF SUMO_VEHICLE29 Solid {
     }
   ]
   name "SUMO vehicle 29"
-  linearVelocity -12.040803364288681 15.08551235947408 0
-  angularVelocity 0 0 -2.9999999999999982
 }
 DEF SUMO_VEHICLE30 Solid {
-  translation 10.352018634710088 248.41599450418923 0.317
-  rotation 0 0 1 1.534519271475389
+  translation 11.203756355203547 252.65013454622056 0.317
+  rotation 0 0 0.9999999999999999 1.4054168373470894
   children [
     ToyotaPriusSimple {
       translation -2.85 0 0
@@ -6092,12 +6043,10 @@ DEF SUMO_VEHICLE30 Solid {
     }
   ]
   name "SUMO vehicle 30"
-  linearVelocity 1.5656943391423894 7.783345665499013 0
-  angularVelocity 0 0 -0.23732065097113786
 }
 DEF SUMO_VEHICLE31 Solid {
-  translation -341.771318427195 -1155.6733860093175 0.358
-  rotation 0 0 1 0.17028923455003808
+  translation -353.4783378181219 -1181.7724413692597 0.358
+  rotation 0 0 1 0.22008486551163176
   children [
     LincolnMKZSimple {
       translation -2.85 0 0
@@ -6108,35 +6057,10 @@ DEF SUMO_VEHICLE31 Solid {
     }
   ]
   name "SUMO vehicle 31"
-  linearVelocity -21.520256233321078 -47.97620470577291 0
-  angularVelocity 0 0 0.09153608632646026
 }
 BmwX5 {
-  hidden position_0_0 1.5391992300970472e-07
-  hidden position2_0_0 0.004087789451286152
-  hidden position_0_1 1.6905078424631523e-07
-  hidden position2_0_1 0.003930832894148484
-  hidden position_0_2 0.0033431337821892533
-  hidden position_0_3 0.002579933697896893
-  hidden position_0_9 0.030765082186310237
-  hidden linearVelocity_0 -0.0011648082446591157 -0.0045837269772423805 -0.00994917790016469
-  hidden angularVelocity_0 0.016673969558134088 -0.004250648469255561 -5.013761714842217e-06
-  hidden rotation_1 -0.9999999993169152 7.696482113270727e-08 -3.696165448259748e-05 0.004164034699060564
-  hidden linearVelocity_1 -0.0006337802729978345 -0.0025882267722717495 0.24707009992252268
-  hidden angularVelocity_1 0.014544874774570976 -0.003691369861353981 -4.8486588957290585e-06
-  hidden rotation_2 0.9999999991099772 -8.452053946649104e-08 -4.219050430680982e-05 0.0040070781309056005
-  hidden linearVelocity_2 -0.0006328737554525712 -0.0025848085588877443 0.24746114720654747
-  hidden angularVelocity_2 0.014542877519088388 -0.003690846104085449 -4.84917763218554e-06
-  hidden rotation_3 -1 0 0 0.004141447383522401
-  hidden linearVelocity_3 0.0010849279337200772 0.0038303976115666768 0.3530740686240059
-  hidden angularVelocity_3 -0.010237892424377849 0.0029527115173798983 -6.0208681366986995e-06
-  hidden rotation_4 1 0 0 0.003378247298089359
-  hidden linearVelocity_4 0.00108747777929034 0.003840108781081535 0.3534664741402842
-  hidden angularVelocity_4 -0.010263753830060547 0.002959439996518669 -6.017979665033296e-06
-  hidden translation_22 -0.009883126692423083 0.06122527177313464 -0.011093305471088555
-  hidden rotation_22 0.7466598432279096 0 -0.6652060421485013 0.030765082186310314
-  translation 82.11450744596192 -26.69840794505844 -0.0412809282240585
-  rotation -0.010313350746466561 -0.007943120576915182 -0.999915267226119 1.8327934589430193
+  translation 72.9609 -24.2591 0.423934
+  rotation 0.017373319288451598 0.004843135884525885 -0.9998373426771503 1.8339876216650608
   sensorsSlotFront [
     Camera {
       name "cameraFront"
@@ -6149,6 +6073,17 @@ BmwX5 {
       verticalFieldOfView 0.5
       numberOfLayers 64
       maxRange 10
+    }
+  ]
+  sensorsSlotTop [
+    GPS {
+      accuracy 2
+    }
+    Camera {
+      rotation 0 1 0 -0.098
+      name "cameraTop"
+      width 2560
+      height 1440
     }
   ]
 }

@@ -40,18 +40,20 @@ Future<void> processStateUpdate(Map<String, Object?> data) async {
           point['z'] as double,
         )
     ]);
-    final res = base64.decode(payload['cameraFront'] as String);
+    final res = base64.decode(payload['cameraTop'] as String);
     imageByteStreamController.add(res);
+    final List<double> gpsVect = (payload['gps'] as List).cast<double>();
+    mapDataStreamController.add(LatLng(gpsVect[0], gpsVect[1]));
   }
 
-  /* lcbClient.send(
+/*   lcbClient.send(
       destination: objectDetectionArtifact,
-      payload: jsonEncode({'image': payload['cameraFront']})); */
+      payload: jsonEncode({'image': payload['cameraTop']}));
+  lcbClient.send(
+      destination: roadSegmentationArtifact,
+      payload: jsonEncode({'image': payload['cameraTop']})); */
   await processObjectDetectionResults({});
   await processRoadSegmentationResults({});
-  /* lcbClient.send(
-      destination: roadSegmentationArtifact,
-      payload: jsonEncode({'image': payload['cameraFront']})); */
 }
 
 Future<void> processObjectDetectionResults(Map<String, Object?> data) async {

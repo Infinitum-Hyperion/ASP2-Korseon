@@ -8,6 +8,8 @@ late final StreamController<Uint8List> objDetImageStreamController =
     StreamController<Uint8List>();
 late final StreamController<Uint8List> roadSegImageStreamController =
     StreamController<Uint8List>();
+late final StreamController<LatLng> mapDataStreamController =
+    StreamController<LatLng>();
 
 final MarkhorConfigs markhorConfigs = MarkhorConfigs(
   keyValueDBProvider: firestoreProvider,
@@ -62,7 +64,17 @@ final MarkhorConfigs markhorConfigs = MarkhorConfigs(
                   ),
                 ),
               ],
-            )
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                MapRendererPane(
+                  width: 500,
+                  height: 300,
+                  dataStream: mapDataStreamController.stream,
+                ),
+              ],
+            ),
           ],
         ),
       );
