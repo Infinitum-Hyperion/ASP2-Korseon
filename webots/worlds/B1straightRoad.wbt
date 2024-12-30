@@ -1,0 +1,47 @@
+#VRML_SIM R2022b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/BmwX5.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/road/protos/StraightRoadSegment.proto"
+
+WorldInfo {
+  gpsCoordinateSystem "WGS84"
+  gpsReference 59.9149 10.74 0
+}
+Viewpoint {
+  orientation -0.29441697461093647 -0.11831095167499682 0.9483254524553794 3.869788189827173
+  position 121.18799061134466 268.7928752898518 200.7112473415345
+  followType "None"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+BmwX5 {
+  translation -4.25176 4.72249 0.526441
+  rotation 0.013028775111610052 -0.00702158165927407 0.9998904682064397 2.589149305869314
+  controller "GPS_Experiment"
+  sensorsSlotTop [
+    GPS {
+      accuracy 1
+    }
+  ]
+}
+Floor {
+  translation -40 27 0
+  rotation 0 0 1 2.55
+  size 100 10
+}
+StraightRoadSegment {
+  rotation 0 0 1 2.55
+  length 100
+  roadBoundingObject TRUE
+}
+StraightRoadSegment {
+  translation -84 69 0
+  rotation 0 0 1 1.0471996938995747
+  name "road(2)"
+  length 70
+}

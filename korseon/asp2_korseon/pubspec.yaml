@@ -24,6 +24,9 @@ dependencies:
   firebase_core: ^3.8.1
   firebase_storage: ^12.3.7
   latlong2: ^0.9.1
+  flutter_map: ^7.0.2
+  web: ^1.1.0
+  xml: ^6.5.0
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +39,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+
+  assets:
+    - files/mapA5_greater.osm
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

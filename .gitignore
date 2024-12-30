@@ -1,4 +1,6 @@
 .DS_Store
 webots/controllers/EgoVehicleController1/venv/lib
 webots/controllers/EgoVehicleController1/venv/bin
+webots/controllers/GPS_Experiment/venv/lib
+webots/controllers/GPS_Experiment/venv/bin
 webots/utils/configs.sh
