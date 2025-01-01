@@ -54,6 +54,6 @@ out = F.interpolate(out, size=org_size, align_corners=False, mode='bilinear')
 out = out.argmax(dim=1)
 
 # visualize
-out = out.squeeze().detach().cpu().numpy()
-pred = palette[out]
-cv2.imwrite('./res.jpg', pred)
+lane_class_id = 7 # road
+lane_mask = (out.squeeze().detach().cpu().numpy() == lane_class_id).astype(np.uint8) * 255
+cv2.imwrite('./mask.jpg', lane_mask)
