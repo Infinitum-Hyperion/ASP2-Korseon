@@ -24,14 +24,14 @@ Future<void> processMessage(String data) async {
 }
 
 Future<void> processStateUpdate(Map<String, Object?> data) async {
-  final mk.ReplayBuffer<Map<String, Object?>> payloadBuffer =
-      project.createReplayBuffer(
-    'newDataPayload',
-    enabled: false,
-    call: () => data,
-  );
-  final Map<String, Object?> payload = await payloadBuffer.get();
-  if (payload['msgType'] == 'snapshot') {
+  if (data['msgType'] == 'snapshot') {
+    final mk.ReplayBuffer<Map<String, Object?>> snapshotBuffer =
+        project.createReplayBuffer(
+      'snapshotBuffer',
+      enabled: true,
+      call: () => data,
+    );
+    final payload = await snapshotBuffer.get();
     pointsStreamController.add([
       for (final point in (payload['lidarFront'] as List).cast<Map>())
         Vector3(
@@ -42,16 +42,24 @@ Future<void> processStateUpdate(Map<String, Object?> data) async {
     ]);
     final res = base64.decode(payload['cameraTop'] as String);
     imageByteStreamController.add(res);
-    /*   lcbClient.send(
-      destination: objectDetectionArtifact,
-      payload: jsonEncode({'image': payload['cameraTop']}));
-  lcbClient.send(
-      destination: roadSegmentationArtifact,
-      payload: jsonEncode({'image': payload['cameraTop']})); */
+/*     lcbClient.send(
+        destination: objectDetectionArtifact,
+        payload: jsonEncode({'image': payload['cameraTop']}));
+    lcbClient.send(
+        destination: roadSegmentationArtifact,
+        payload: jsonEncode({'image': payload['cameraTop']})); */
     await processObjectDetectionResults({});
     await processRoadSegmentationResults({});
-  } else if (payload['msgType'] == 'gps-update') {
+  } else if (data['msgType'] == 'nav-update') {
+    final mk.ReplayBuffer<Map<String, Object?>> navUpdateBuffer =
+        project.createReplayBuffer(
+      'navUpdateBuffer',
+      enabled: true,
+      call: () => data,
+    );
+    final payload = await navUpdateBuffer.get();
     await performRoadLevelLocalisation(payload);
+    await performLaneLevelLocalisation(payload);
   }
 }
 
@@ -90,11 +98,27 @@ Future<void> performRoadLevelLocalisation(Map<String, Object?> data) async {
   mapDataStreamController.add(
     MapRenderData(
       gpsPoint: LatLng(gpsVect[0], gpsVect[1]),
-      localisedSegment: RoadLevelLocalisation().localisedPoint(
+      localisedSegment:
+          null, /**RoadLevelLocalisation().localisedPoint(
         (gpsVect[0], gpsVect[1]),
-      ),
+      ), */
     ),
   );
+}
+
+Future<void> performLaneLevelLocalisation(Map<String, Object?> data) async {
+  final mk.ReplayBuffer<Map<String, Object?>> payloadBuffer =
+      project.createReplayBuffer(
+    'laneSegResult',
+    enabled: true,
+    call: () => data,
+  );
+  final Map<String, Object?> payload = await payloadBuffer.get();
+
+  if (payload['code'] == 'result') {
+    final res = base64.decode(payload['image'] as String);
+    laneSegImageStreamController.add(res);
+  }
 }
 
 Future<void> loadRoadSegments() async {

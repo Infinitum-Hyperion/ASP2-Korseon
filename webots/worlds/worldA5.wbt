@@ -29,8 +29,8 @@ WorldInfo {
   lineScale 2
 }
 Viewpoint {
-  orientation 0.24498698104439876 0.08853311242718101 -0.965475668840343 2.4712349744720212
-  position 95.55428700745586 -8.603075577692497 19.286441821231893
+  orientation 0.013588267464846406 -0.004193795326006183 -0.9998988804214491 3.7589861925769266
+  position 84.43468901391373 -47.7592821573016 1.252465226060392
   near 3
 }
 TexturedBackground {
@@ -38,7 +38,6 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 Floor {
-  translation 0 0 -0.02
   size 477 559
   appearance PBRAppearance {
     baseColorMap ImageTexture {
@@ -1214,7 +1213,6 @@ Road {
   startJunction "79302"
   endJunction "1287"
   width 7.8
-  numberOfLanes 1
   speedLimit 8.333333
   lines []
   wayPoints [
@@ -6059,8 +6057,8 @@ DEF SUMO_VEHICLE31 Solid {
   name "SUMO vehicle 31"
 }
 BmwX5 {
-  translation 72.9609 -24.2591 0.423934
-  rotation 0.017373319288451598 0.004843135884525885 -0.9998373426771503 1.8339876216650608
+  translation 67.8634 -37.1075 0.482277
+  rotation -0.015202406960422963 -0.0064770829655328346 0.9998634577875457 -2.0957453071795866
   sensorsSlotFront [
     Camera {
       name "cameraFront"
@@ -6080,10 +6078,12 @@ BmwX5 {
       accuracy 2
     }
     Camera {
-      rotation 0 1 0 -0.098
+      rotation 0 -0.9999999999999999 0 0.04
       name "cameraTop"
+      fieldOfView 0.6
       width 2560
       height 1440
+      near 0.1
     }
   ]
 }

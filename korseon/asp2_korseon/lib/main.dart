@@ -54,7 +54,8 @@ void main(List<String> args) async {
       .spawnClient((str) async => await processMessage(str));
 
   // For debug mode
-  Future.delayed(const Duration(seconds: 5), () => processStateUpdate({}));
+  Future.delayed(const Duration(seconds: 5),
+      () => processStateUpdate({'msgType': 'snapshot'}));
 
   // Start the autocloud UI
   runApp(const AutocloudInterface());

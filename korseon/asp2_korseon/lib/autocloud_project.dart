@@ -9,6 +9,7 @@ late final AutocloudArtifact tasksArtifact;
 late final AutocloudArtifact vehicleControllerArtifact;
 late final AutocloudArtifact objectDetectionArtifact;
 late final AutocloudArtifact roadSegmentationArtifact;
+late final AutocloudArtifact laneSegmentationArtifact;
 void initProject() {
   if (projectHasInit) return;
   mainArtifact = project.addArtifact(
@@ -33,11 +34,17 @@ void initProject() {
     socket: const ArtifactSocket(host: '0.0.0.0', port: 8078),
   );
 
+  laneSegmentationArtifact = project.addArtifact(
+    label: 'lane-segmentation',
+    socket: const ArtifactSocket(host: '0.0.0.0', port: 8077),
+  );
+
   mainArtifact;
   tasksArtifact;
   vehicleControllerArtifact;
   objectDetectionArtifact;
   roadSegmentationArtifact;
+  laneSegmentationArtifact;
 
   projectHasInit = true;
 }

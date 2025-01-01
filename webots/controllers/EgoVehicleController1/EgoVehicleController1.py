@@ -8,6 +8,7 @@ import math
 import base64
 from io import BytesIO
 from PIL import Image
+import warnings
 
 sys.path.append(os.path.abspath("/Users/OBSiDIAN/Downloads/Shelves/VSCode/Repositories/The Hyperion Project/markhor/markhor_sdk/python_3_9/telemetry"))
 from lightweight_communication_bridge import LCB
@@ -58,6 +59,14 @@ class VehicleState:
 
     def getGpsVector(self):
         return self.sensor_gps.getValues()
+
+    def getDash(self) -> dict[str, object]:
+        return {
+            'rpm': driver.getRpm(),
+            'speed': driver.getCurrentSpeed(),
+            'gear': driver.getGearNumber(),
+            'steer': driver.getSteeringAngle(),
+        }
     
     def snapshot(self) -> dict[str, object]:
         return {
@@ -66,6 +75,14 @@ class VehicleState:
             'cameraTop': self.getProcImgBytes(self.getImg()),
             'lidarFront': self.getProcPointCloud(), # list[dict[str, object]]
             'gps': self.getGpsVector(),
+            'dash': self.getDash(),
+        }
+
+    def navUpdate(self) -> dict[str, object]:
+        return {
+            'msgType': 'nav-update',
+            'gps': self.getGpsVector(),
+            'dash': self.getDash(),
         }
 
 
@@ -76,14 +93,17 @@ def simulatorLoop():
     timesteps: int = 0
     vstate = VehicleState(timestep)
 
-    while driver.step() != -1:
-        timesteps += 1
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        while driver.step() != -1:
+            timesteps += 1
 
-        print(f"Step #{timesteps}")
-        if (timesteps % 20 == 0):
-            lcb.send('asp2-korseon.korseon-main', {'source': 'asp2-korseon.vehicle-controller', **vstate.snapshot()})
-        if (timesteps == 200):
-            lcb.close()
+            print(f"Step #{timesteps}")
+            if (timesteps == 80):
+                lcb.send('asp2-korseon.korseon-main', {'source': 'asp2-korseon.vehicle-controller', **vstate.snapshot()})
+            if (timesteps % 50 == 0):
+                lcb.send('asp2-korseon.korseon-main', {'source': 'asp2-korseon.vehicle-controller', **vstate.navUpdate()})
+
     pass
 
 def main():

@@ -10,6 +10,8 @@ late final StreamController<Uint8List> roadSegImageStreamController =
     StreamController<Uint8List>();
 late final StreamController<MapRenderData> mapDataStreamController =
     StreamController<MapRenderData>();
+late final StreamController<Uint8List> laneSegImageStreamController =
+    StreamController<Uint8List>();
 
 final MarkhorConfigs markhorConfigs = MarkhorConfigs(
   keyValueDBProvider: firestoreProvider,
@@ -24,11 +26,13 @@ final MarkhorConfigs markhorConfigs = MarkhorConfigs(
             Row(
               children: [
                 PointCloudRendererPane(
+                  title: 'Lidar Point Cloud',
                   width: 500,
                   height: 300,
                   pointsStream: pointsStreamController.stream,
                 ),
                 ImageRendererPane(
+                  title: 'Camera Feed (C1)',
                   width: 500,
                   height: 300,
                   imageByteStream: imageByteStreamController.stream.map(
@@ -44,6 +48,7 @@ final MarkhorConfigs markhorConfigs = MarkhorConfigs(
             Row(
               children: [
                 ImageRendererPane(
+                  title: 'Object Detection',
                   width: 500,
                   height: 300,
                   imageByteStream: objDetImageStreamController.stream.map(
@@ -54,9 +59,21 @@ final MarkhorConfigs markhorConfigs = MarkhorConfigs(
                   ),
                 ),
                 ImageRendererPane(
+                  title: 'Road Segmentation',
                   width: 500,
                   height: 300,
                   imageByteStream: roadSegImageStreamController.stream.map(
+                    (byteList) => Image.memory(
+                      byteList,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+                ImageRendererPane(
+                  title: 'Lane Segmentation',
+                  width: 500,
+                  height: 300,
+                  imageByteStream: laneSegImageStreamController.stream.map(
                     (byteList) => Image.memory(
                       byteList,
                       fit: BoxFit.fitWidth,
