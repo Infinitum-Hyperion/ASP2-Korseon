@@ -37,7 +37,9 @@ class CULaneDataset(Dataset):
 
         # Define the specific folders you extracted or want to load
         selected_folders = [
-            'driver_100_30frame'
+            'driver_100_30frame',
+            'driver_161_90frame',
+            'driver_193_90frame'
             # Add other driver folders as needed
         ]
 

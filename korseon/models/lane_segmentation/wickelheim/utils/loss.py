@@ -3,16 +3,16 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class BinaryFocalLoss(nn.Module):
-    def __init__(self, gamma=2, alpha=None, reduction='mean'):
+    def __init__(self, gamma=2, alpha=None, reduction='mean'):  # Add gamma here
         super(BinaryFocalLoss, self).__init__()
-        self.gamma = gamma
+        self.gamma = gamma  # Now gamma is an attribute of the object
         self.alpha = alpha
         self.reduction = reduction
 
     def forward(self, logits, targets):
         probs = torch.sigmoid(logits)
         pt = torch.where(targets == 1, probs, 1 - probs)
-        loss = - (1 - pt) ** self.gamma * torch.log(pt)
+        loss = - (1 - pt) ** self.gamma * torch.log(pt)  # Now you can use self.gamma
 
         if self.alpha is not None:
             alpha_t = torch.where(targets == 1, self.alpha, 1 - self.alpha)
@@ -35,6 +35,7 @@ class DiscriminativeLoss(nn.Module):
         self.beta = beta
         self.gamma = gamma
         self.reduction = reduction
+        self.eps = 1e-7  # Added small epsilon for numerical stability
 
     def forward(self, embeddings, instance_masks):
         num_samples = embeddings.size(0)
@@ -61,7 +62,7 @@ class DiscriminativeLoss(nn.Module):
             if torch.sum(mask) == 0:
                 continue  # Skip empty masks
 
-            mean_vec = torch.sum(embedding * mask, dim=(1, 2)) / torch.sum(mask)
+            mean_vec = torch.sum(embedding * mask, dim=(1, 2)) / (torch.sum(mask) + self.eps) # Add epsilon
             mask_mean.append(mean_vec)
 
         if len(mask_mean) == 0:
@@ -88,7 +89,7 @@ class DiscriminativeLoss(nn.Module):
 
         # Divide by the number of non-empty clusters
         num_non_empty_clusters = len(mask_mean)
-        var_loss = var_loss / num_non_empty_clusters if num_non_empty_clusters > 0 else torch.tensor(0.0, device=embedding.device)
+        var_loss = var_loss / (num_non_empty_clusters + self.eps) if num_non_empty_clusters > 0 else torch.tensor(0.0, device=embedding.device) # Add epsilon
 
         # Distance loss
         dist_loss = 0.0  # Initialize dist_loss to 0.0
@@ -102,7 +103,7 @@ class DiscriminativeLoss(nn.Module):
                     dist = torch.norm(mask_mean[i] - mask_mean[j], p=self.norm)
                     dist_loss += torch.relu(self.delta_dist - dist) ** 2
             # Divide by the correct number of distances
-            dist_loss = dist_loss / (num_non_empty_clusters * (num_non_empty_clusters - 1) / 2) if num_non_empty_clusters > 1 else torch.tensor(0.0, device=embedding.device)
+            dist_loss = dist_loss / (num_non_empty_clusters * (num_non_empty_clusters - 1) / 2 + self.eps) if num_non_empty_clusters > 1 else torch.tensor(0.0, device=embedding.device) # Add epsilon
         # else: # Remove unnecessary else
         #     dist_loss = 0.0
 
