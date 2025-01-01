@@ -1,117 +1,84 @@
-import argparse
-import logging
+import segmentation_models_pytorch as smp
+import torch
+import cv2
+import numpy as np
+from albumentations import Compose, Resize, Normalize
+from albumentations.pytorch import ToTensorV2
 import os
 
-import numpy as np
-import torch
-import torch.nn.functional as F
-from PIL import Image
-from torchvision import transforms
+# Define output directory for saving results
+OUTPUT_DIR = "./output"
+if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR)
 
-from utils.data_loading import BasicDataset
-from unet import UNet
-from utils.utils import plot_img_and_mask
+def preprocess_image(image_path):
+    """Preprocess the image for the model."""
+    # Define preprocessing pipeline
+    preprocess = Compose([
+        Resize(512, 256),  # Resize to match model's input size
+        Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+        ToTensorV2(),
+    ])
 
-def predict_img(net,
-                full_img,
-                device,
-                scale_factor=1,
-                out_threshold=0.5):
-    net.eval()
-    img = torch.from_numpy(BasicDataset.preprocess(None, full_img, scale_factor, is_mask=False))
-    img = img.unsqueeze(0)
-    img = img.to(device=device, dtype=torch.float32)
+    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    if image is None:
+        raise FileNotFoundError(f"Image not found at {image_path}")
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+    augmented = preprocess(image=image)
+    return augmented["image"].unsqueeze(0)  # Add batch dimension
 
+def predict(image_path, model, device="cpu"):
+    """Perform inference on an image."""
+    # Preprocess image
+    input_tensor = preprocess_image(image_path).to(device)
+
+    # Perform inference
     with torch.no_grad():
-        output = net(img).cpu()
-        output = F.interpolate(output, (full_img.size[1], full_img.size[0]), mode='bilinear')
-        if net.n_classes > 1:
-            mask = output.argmax(dim=1)
-        else:
-            mask = torch.sigmoid(output) > out_threshold
+        output = model(input_tensor)
+        output = torch.sigmoid(output)  # Convert logits to probabilities
 
-    return mask[0].long().squeeze().numpy()
+    # Convert output to binary mask
+    binary_mask = (output.squeeze(0).squeeze(0) > 0.5).cpu().numpy().astype(np.uint8)
+    return binary_mask
 
+def save_binary_mask(binary_mask, output_name="binary_mask.png"):
+    """Save the binary mask to a file."""
+    mask_path = os.path.join(OUTPUT_DIR, output_name)
+    cv2.imwrite(mask_path, binary_mask * 255)  # Convert binary mask to grayscale format
+    print(f"Binary mask saved to: {mask_path}")
 
-def get_args():
-    parser = argparse.ArgumentParser(description='Predict masks from input images')
-    parser.add_argument('--model', '-m', default='MODEL.pth', metavar='FILE',
-                        help='Specify the file in which the model is stored')
-    parser.add_argument('--input', '-i', metavar='INPUT', nargs='+', help='Filenames of input images', required=True)
-    parser.add_argument('--output', '-o', metavar='OUTPUT', nargs='+', help='Filenames of output images')
-    parser.add_argument('--viz', '-v', action='store_true',
-                        help='Visualize the images as they are processed')
-    parser.add_argument('--no-save', '-n', action='store_true', help='Do not save the output masks')
-    parser.add_argument('--mask-threshold', '-t', type=float, default=0.5,
-                        help='Minimum probability value to consider a mask pixel white')
-    parser.add_argument('--scale', '-s', type=float, default=0.5,
-                        help='Scale factor for the input images')
-    parser.add_argument('--bilinear', action='store_true', default=False, help='Use bilinear upsampling')
-    parser.add_argument('--classes', '-c', type=int, default=2, help='Number of classes')
-    
-    return parser.parse_args()
+def overlay_mask(image_path, mask, output_name="lane_overlay.jpg"):
+    """Overlay the binary mask onto the original image."""
+    original_image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    mask_resized = cv2.resize(mask, (original_image.shape[1], original_image.shape[0]))
+    overlay = cv2.addWeighted(original_image, 0.7, cv2.cvtColor(mask_resized * 255, cv2.COLOR_GRAY2BGR), 0.3, 0)
 
-
-def get_output_filenames(args):
-    def _generate_name(fn):
-        return f'{os.path.splitext(fn)[0]}_OUT.png'
-
-    return args.output or list(map(_generate_name, args.input))
-
-
-def mask_to_image(mask: np.ndarray, mask_values):
-    if isinstance(mask_values[0], list):
-        out = np.zeros((mask.shape[-2], mask.shape[-1], len(mask_values[0])), dtype=np.uint8)
-    elif mask_values == [0, 1]:
-        out = np.zeros((mask.shape[-2], mask.shape[-1]), dtype=bool)
-    else:
-        out = np.zeros((mask.shape[-2], mask.shape[-1]), dtype=np.uint8)
-
-    if mask.ndim == 3:
-        mask = np.argmax(mask, axis=0)
-
-    for i, v in enumerate(mask_values):
-        out[mask == i] = v
-
-    return Image.fromarray(out)
-
+    # Save the overlay
+    overlay_path = os.path.join(OUTPUT_DIR, output_name)
+    cv2.imwrite(overlay_path, overlay)
+    print(f"Lane overlay image saved to: {overlay_path}")
+    return overlay
 
 if __name__ == '__main__':
-    args = get_args()
-    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+    # Load pretrained UNet model with MobileNetV2 backbone
+    model = smp.Unet(
+        encoder_name="mobilenet_v2",       # Lightweight backbone
+        encoder_weights="imagenet",       # Use pretrained weights
+        in_channels=3,                    # RGB images
+        classes=1,                        # Binary segmentation (lane vs. background)
+    )
 
-    in_files = args.input
-    out_files = get_output_filenames(args)
+    # Set the model to evaluation mode
+    model.eval()
 
-    net = UNet(n_channels=3, n_classes=args.classes, bilinear=args.bilinear)
+    # Example usage
+    image_path = "./image.png"  # Path to the test image
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    logging.info(f'Loading model {args.model}')
-    logging.info(f'Using device {device}')
+    # Perform inference
+    binary_mask = predict(image_path, model)
 
-    net.to(device=device)
-    state_dict = torch.load(args.model, map_location=device)
-    mask_values = state_dict.pop('mask_values', [0, 1])
-    net.load_state_dict(state_dict)
+    # Save binary mask separately
+    save_binary_mask(binary_mask, output_name="binary_mask.png")
 
-    logging.info('Model loaded!')
-
-    for i, filename in enumerate(in_files):
-        logging.info(f'Predicting image {filename} ...')
-        img = Image.open(filename)
-
-        mask = predict_img(net=net,
-                           full_img=img,
-                           scale_factor=args.scale,
-                           out_threshold=args.mask_threshold,
-                           device=device)
-
-        if not args.no_save:
-            out_filename = out_files[i]
-            result = mask_to_image(mask, mask_values)
-            result.save(out_filename)
-            logging.info(f'Mask saved to {out_filename}')
-
-        if args.viz:
-            logging.info(f'Visualizing results for image {filename}, close to continue...')
-            plot_img_and_mask(img, mask)
+    # Create and save lane overlay
+    overlay_mask(image_path, binary_mask, output_name="lane_overlay.jpg")
