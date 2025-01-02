@@ -57,12 +57,21 @@ out_prob = F.softmax(out_resized, dim=1)  # Shape: (batch_size, n_classes, heigh
 lane_prob = out_prob[:, lane_class_id]  # Shape: (batch_size, height, width)
 lane_prob_normalized = (lane_prob - lane_prob.min()) / (lane_prob.max() - lane_prob.min())
 
-# Otsu's Method
+# Convert lane probabilities to a numpy array
 lane_prob_np = lane_prob.squeeze().cpu().numpy()
-lane_prob_scaled = (lane_prob_np * 255).astype(np.uint8)
-_, optimal_thresh = cv2.threshold(lane_prob_scaled, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-lane_mask = (lane_prob_np > (optimal_thresh / 255)).astype(np.uint8) * 255
 
+# Normalize probabilities
+lane_prob_normalized = (lane_prob_np - lane_prob_np.min()) / (lane_prob_np.max() - lane_prob_np.min())
+
+# Compute dynamic threshold using percentile
+percentile_threshold = np.percentile(lane_prob_normalized, 95)
+
+# Apply fixed and percentile thresholds
+fixed_mask = lane_prob_normalized > args.threshold
+percentile_mask = lane_prob_normalized > percentile_threshold
+
+# Combine the masks (logical OR)
+lane_mask = np.logical_or(fixed_mask, percentile_mask).astype(np.uint8) * 255
 
 # visualize
 # lane_mask = (lane_prob_normalized > args.threshold).squeeze().cpu().numpy().astype(np.uint8) * 255
