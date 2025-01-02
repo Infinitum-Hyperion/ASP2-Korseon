@@ -24,6 +24,7 @@ parse = argparse.ArgumentParser()
 parse.add_argument('--config', dest='config', type=str, default='configs/bisenetv2_city.py',)
 parse.add_argument('--weight-path', type=str, default='./weights/model_final_v1_city_new.pth',)
 parse.add_argument('--img-path', dest='img_path', type=str, default='./image.png',)
+parse.add_argument('--thr', dest='threshold', type=float)
 args = parse.parse_args()
 cfg = set_cfg_from_file(args.config)
 
@@ -48,12 +49,62 @@ org_size = im.size()[2:]
 new_size = [math.ceil(el / 32) * 32 for el in im.size()[2:]]
 
 # inference
+lane_class_id = 7 # road
 im = F.interpolate(im, size=new_size, align_corners=False, mode='bilinear')
-out = net(im)[0]
-out = F.interpolate(out, size=org_size, align_corners=False, mode='bilinear')
-out = out.argmax(dim=1)
+out_raw = net(im)[0]
+out_resized = F.interpolate(out_raw, size=org_size, align_corners=False, mode='bilinear')
+out_prob = F.softmax(out_resized, dim=1)  # Shape: (batch_size, n_classes, height, width)
+lane_prob = out_prob[:, lane_class_id]  # Shape: (batch_size, height, width)
+lane_prob_normalized = (lane_prob - lane_prob.min()) / (lane_prob.max() - lane_prob.min())
+
+# Otsu's Method
+lane_prob_np = lane_prob.squeeze().cpu().numpy()
+lane_prob_scaled = (lane_prob_np * 255).astype(np.uint8)
+_, optimal_thresh = cv2.threshold(lane_prob_scaled, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+lane_mask = (lane_prob_np > (optimal_thresh / 255)).astype(np.uint8) * 255
+
 
 # visualize
-lane_class_id = 7 # road
-lane_mask = (out.squeeze().detach().cpu().numpy() == lane_class_id).astype(np.uint8) * 255
-cv2.imwrite('./mask.jpg', lane_mask)
+# lane_mask = (lane_prob_normalized > args.threshold).squeeze().cpu().numpy().astype(np.uint8) * 255
+cv2.imwrite('./res/mask.jpg', lane_mask)
+
+
+### Morphological Ops
+
+lane_mask = cv2.imread('./res/mask.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Apply morphological operations
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+cleaned_mask = cv2.morphologyEx(lane_mask, cv2.MORPH_CLOSE, kernel)  # Fill small gaps
+cleaned_mask = cv2.morphologyEx(cleaned_mask, cv2.MORPH_OPEN, kernel)  # Remove noise
+
+# Save the refined mask
+cv2.imwrite('./res/cleaned_lane_mask.jpg', cleaned_mask)
+
+### Region Filtering
+# Remove small blobs
+num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(cleaned_mask, connectivity=8)
+for i in range(1, num_labels):  # Skip background (label 0)
+    if stats[i, cv2.CC_STAT_AREA] < 500:  # Adjust the area threshold as needed
+        cleaned_mask[labels == i] = 0
+
+# Save the refined mask
+cv2.imwrite('./res/filtered_lane_mask.jpg', cleaned_mask)
+
+### Lane Line Approximation
+# Apply edge detection
+edges = cv2.Canny(cleaned_mask, 50, 150)
+
+# Detect lines using Hough Transform
+lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=50, minLineLength=50, maxLineGap=20)
+
+# Draw the detected lines
+output_image = cv2.imread('./image.png')  # Load the original image
+if lines is not None:
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+        cv2.line(output_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+# Save the output image with lines
+cv2.imwrite('./res/lane_lines.jpg', output_image)
+
