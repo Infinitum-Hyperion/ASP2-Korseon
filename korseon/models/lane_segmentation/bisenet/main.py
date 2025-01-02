@@ -73,6 +73,18 @@ percentile_mask = lane_prob_normalized > percentile_threshold
 # Combine the masks (logical OR)
 lane_mask = np.logical_or(fixed_mask, percentile_mask).astype(np.uint8) * 255
 
+# Spatial Filter to remove building contours
+# Assuming `binary_mask` is the current filtered binary lane mask
+h, w = lane_mask.shape
+
+# Create a spatial filter that keeps only the bottom half
+spatial_filter = np.zeros((h, w), dtype=np.uint8)
+spatial_filter[2* h//3:, :] = 1  # Keep bottom half
+
+# Apply spatial filter to the mask
+filtered_binary_mask = lane_mask * spatial_filter
+cv2.imwrite('./res/sptial_mask.jpg', filtered_binary_mask)
+
 # visualize
 # lane_mask = (lane_prob_normalized > args.threshold).squeeze().cpu().numpy().astype(np.uint8) * 255
 cv2.imwrite('./res/mask.jpg', lane_mask)
@@ -84,7 +96,7 @@ lane_mask = cv2.imread('./res/mask.jpg', cv2.IMREAD_GRAYSCALE)
 
 # Apply morphological operations
 kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-cleaned_mask = cv2.morphologyEx(lane_mask, cv2.MORPH_CLOSE, kernel)  # Fill small gaps
+cleaned_mask = cv2.morphologyEx(filtered_binary_mask, cv2.MORPH_CLOSE, kernel)  # Fill small gaps
 cleaned_mask = cv2.morphologyEx(cleaned_mask, cv2.MORPH_OPEN, kernel)  # Remove noise
 
 # Save the refined mask
