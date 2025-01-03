@@ -6,7 +6,7 @@ RUN pip install --no-cache-dir torch torchvision --index-url https://download.py
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 libglib2.0-0 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir pillow numpy opencv-python scikit-image
+RUN pip install --no-cache-dir pillow numpy opencv-python scikit-image matplotlib
 COPY . .
 
 CMD ["/bin/sh", "-c", "bash"]

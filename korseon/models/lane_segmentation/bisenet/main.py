@@ -11,6 +11,7 @@ import lib.data.transform_cv2 as T
 from lib.models import model_factory
 from configs import set_cfg_from_file
 from skimage.morphology import skeletonize
+import matplotlib.pyplot as plt
 
 # uncomment the following line if you want to reduce cpu usage, see issue #231
 #  torch.set_num_threads(4)
@@ -160,3 +161,48 @@ for coeffs in lane_curves:
     x_vals = np.polyval(coeffs, y_vals)
     centerline = np.column_stack((x_vals, y_vals))  # (x, y) points of the lane
 # print(f"center: {centerline}")
+
+# Visualise polynomials
+
+# Create a blank image
+image_height, image_width = 1440, 2560  # Define image dimensions
+plt.figure(figsize=(10, 6))
+plt.xlim(0, image_width)
+plt.ylim(0, image_height)
+plt.gca().invert_yaxis()  # Invert Y-axis to match image coordinate system
+
+# Plot each polynomial
+for coeffs in lane_curves:
+    y_vals = np.linspace(0, image_height, num=100)  # Sample points for y
+    x_vals = np.polyval(coeffs, y_vals)  # Compute corresponding x
+    plt.plot(x_vals, y_vals, linewidth=2)
+
+# Save the visualization as a JPEG file
+plt.axis('off')  # Remove axis for a clean output
+output_path = './res/lane_polynomials.jpg'
+plt.savefig(output_path, bbox_inches='tight', pad_inches=0)
+plt.close()
+
+
+# Apply morphological closing
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))  # Adjust kernel size
+closed = cv2.morphologyEx(filtered_binary_mask, cv2.MORPH_CLOSE, kernel)
+
+cv2.imwrite('./res/enhanced_mask.jpg', closed)
+lines = cv2.HoughLinesP(
+    filtered_binary_mask,
+    rho=1,
+    theta=np.pi / 180,
+    threshold=50,  # Adjust based on input image
+    minLineLength=30,  # Minimum length of line segments
+    maxLineGap=20,  # Maximum gap to consider segments connected
+)
+
+# Overlay detected lines on the original mask
+output_mask = np.zeros_like(filtered_binary_mask)
+if lines is not None:
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+        cv2.line(output_mask, (x1, y1), (x2, y2), 255, thickness=2)
+
+cv2.imwrite('./res/lane_lines_detected.jpg', output_mask)
