@@ -11,6 +11,7 @@ import lib.data.transform_cv2 as T
 from lib.models import model_factory
 from configs import set_cfg_from_file
 from skimage.morphology import skeletonize
+from sklearn.linear_model import RANSACRegressor
 import matplotlib.pyplot as plt
 
 # uncomment the following line if you want to reduce cpu usage, see issue #231
@@ -140,49 +141,6 @@ lane_skeleton = skeletonize(cleaned_mask // 255)
 lane_skeleton = (lane_skeleton * 255).astype(np.uint8)
 cv2.imwrite('./res/skeleton.jpg', lane_skeleton)
 
-# Find contours in the skeletonized lane mask
-contours, _ = cv2.findContours(lane_skeleton, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-# Extract lane points
-lane_points = [contour[:, 0, :] for contour in contours]  # List of arrays (x, y)
-
-# Fit a second-degree polynomial to each lane
-lane_curves = []
-for points in lane_points:
-    x = points[:, 0]
-    y = points[:, 1]
-    if len(x) > 2:  # Ensure enough points for fitting
-        poly_coeffs = np.polyfit(y, x, 2)  # Fit x = f(y)
-        lane_curves.append(poly_coeffs)
-print(lane_curves)
-
-for coeffs in lane_curves:
-    y_vals = np.linspace(0, lane_skeleton.shape[0], num=100)  # Sample points
-    x_vals = np.polyval(coeffs, y_vals)
-    centerline = np.column_stack((x_vals, y_vals))  # (x, y) points of the lane
-# print(f"center: {centerline}")
-
-# Visualise polynomials
-
-# Create a blank image
-image_height, image_width = 1440, 2560  # Define image dimensions
-plt.figure(figsize=(10, 6))
-plt.xlim(0, image_width)
-plt.ylim(0, image_height)
-plt.gca().invert_yaxis()  # Invert Y-axis to match image coordinate system
-
-# Plot each polynomial
-for coeffs in lane_curves:
-    y_vals = np.linspace(0, image_height, num=100)  # Sample points for y
-    x_vals = np.polyval(coeffs, y_vals)  # Compute corresponding x
-    plt.plot(x_vals, y_vals, linewidth=2)
-
-# Save the visualization as a JPEG file
-plt.axis('off')  # Remove axis for a clean output
-output_path = './res/lane_polynomials.jpg'
-plt.savefig(output_path, bbox_inches='tight', pad_inches=0)
-plt.close()
-
 
 # Apply morphological closing
 kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))  # Adjust kernel size
@@ -206,3 +164,37 @@ if lines is not None:
         cv2.line(output_mask, (x1, y1), (x2, y2), 255, thickness=2)
 
 cv2.imwrite('./res/lane_lines_detected.jpg', output_mask)
+
+# Find contours in the skeletonized lane mask
+contours, _ = cv2.findContours(output_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# Extract lane points
+lane_points = [contour[:, 0, :] for contour in contours]  # List of arrays (x, y)
+
+lane_curves = []
+for points in lane_points:
+    x = points[:, 0]
+    y = points[:, 1]
+    if len(x) > 2:
+        # Use RANSAC to fit a polynomial
+        ransac = RANSACRegressor(residual_threshold=2, max_trials=100)
+        y_reshaped = y.reshape(-1, 1)
+        ransac.fit(y_reshaped, x)
+        
+        # Extract coefficients from RANSAC
+        inlier_mask = ransac.inlier_mask_
+        poly_coeffs = np.polyfit(y[inlier_mask], x[inlier_mask], deg=2)  # Third-degree polynomial
+        lane_curves.append(poly_coeffs)
+
+# Visualize polynomials
+for coeffs in lane_curves:
+    y_vals = np.linspace(0, lane_skeleton.shape[0], num=100)
+    x_vals = np.polyval(coeffs, y_vals)
+    plt.plot(x_vals, y_vals)
+plt.gca().invert_yaxis()  # Invert y-axis for image coordinates
+
+# Save the visualization as a JPEG file
+plt.axis('off')  # Remove axis for a clean output
+output_path = './res/lane_polynomials.jpg'
+plt.savefig(output_path, bbox_inches='tight', pad_inches=0)
+plt.close()
