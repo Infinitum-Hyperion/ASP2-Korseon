@@ -10,7 +10,7 @@ import cv2
 import lib.data.transform_cv2 as T
 from lib.models import model_factory
 from configs import set_cfg_from_file
-
+from skimage.morphology import skeletonize
 
 # uncomment the following line if you want to reduce cpu usage, see issue #231
 #  torch.set_num_threads(4)
@@ -79,7 +79,7 @@ h, w = lane_mask.shape
 
 # Create a spatial filter that keeps only the bottom half
 spatial_filter = np.zeros((h, w), dtype=np.uint8)
-spatial_filter[2* h//3:, :] = 1  # Keep bottom half
+spatial_filter[2* h//3:, :] = 1  # Keep bottom third
 
 # Apply spatial filter to the mask
 filtered_binary_mask = lane_mask * spatial_filter
@@ -129,3 +129,34 @@ if lines is not None:
 # Save the output image with lines
 cv2.imwrite('./res/lane_lines.jpg', output_image)
 
+
+### Skeletonise
+
+# Skeletonize the lane mask
+lane_skeleton = skeletonize(cleaned_mask // 255)
+
+# Convert skeleton back to uint8
+lane_skeleton = (lane_skeleton * 255).astype(np.uint8)
+cv2.imwrite('./res/skeleton.jpg', lane_skeleton)
+
+# Find contours in the skeletonized lane mask
+contours, _ = cv2.findContours(lane_skeleton, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# Extract lane points
+lane_points = [contour[:, 0, :] for contour in contours]  # List of arrays (x, y)
+
+# Fit a second-degree polynomial to each lane
+lane_curves = []
+for points in lane_points:
+    x = points[:, 0]
+    y = points[:, 1]
+    if len(x) > 2:  # Ensure enough points for fitting
+        poly_coeffs = np.polyfit(y, x, 2)  # Fit x = f(y)
+        lane_curves.append(poly_coeffs)
+print(lane_curves)
+
+for coeffs in lane_curves:
+    y_vals = np.linspace(0, lane_skeleton.shape[0], num=100)  # Sample points
+    x_vals = np.polyval(coeffs, y_vals)
+    centerline = np.column_stack((x_vals, y_vals))  # (x, y) points of the lane
+# print(f"center: {centerline}")
