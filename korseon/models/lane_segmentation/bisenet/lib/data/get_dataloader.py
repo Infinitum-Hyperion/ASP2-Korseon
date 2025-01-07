@@ -3,13 +3,13 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import torch.distributed as dist
 
-import lib.data.transform_cv2 as T
-from lib.data.sampler import RepeatedDistSampler
+import bisenet.lib.data.transform_cv2 as T
+from bisenet.lib.data.sampler import RepeatedDistSampler
 
-from lib.data.cityscapes_cv2 import CityScapes
-from lib.data.coco import CocoStuff
-from lib.data.ade20k import ADE20k
-from lib.data.customer_dataset import CustomerDataset
+from bisenet.lib.data.cityscapes_cv2 import CityScapes
+from bisenet.lib.data.coco import CocoStuff
+from bisenet.lib.data.ade20k import ADE20k
+from bisenet.lib.data.customer_dataset import CustomerDataset
 
 
 

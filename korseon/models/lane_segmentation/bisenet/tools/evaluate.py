@@ -19,10 +19,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.distributed as dist
 
-from lib.models import model_factory
-from configs import set_cfg_from_file
-from lib.logger import setup_logger
-from lib.data import get_data_loader
+from bisenet.lib.models import model_factory
+from bisenet.configs import set_cfg_from_file
+from bisenet.lib.data import get_data_loader
 
 
 def get_round_size(size, divisor=32):

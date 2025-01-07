@@ -5,8 +5,8 @@ sys.path.insert(0, '.')
 
 import torch
 
-from lib.models import model_factory
-from configs import set_cfg_from_file
+from bisenet.lib.models import model_factory
+from bisenet.configs import set_cfg_from_file
 
 torch.set_grad_enabled(False)
 

@@ -2,8 +2,8 @@
 # -*- encoding: utf-8 -*-
 
 
-import lib.data.transform_cv2 as T
-from lib.data.base_dataset import BaseDataset
+import bisenet.lib.data.transform_cv2 as T
+from bisenet.lib.data.base_dataset import BaseDataset
 
 
 class CustomerDataset(BaseDataset):
