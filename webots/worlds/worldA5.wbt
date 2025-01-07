@@ -29,8 +29,8 @@ WorldInfo {
   lineScale 2
 }
 Viewpoint {
-  orientation 0.013588267464846406 -0.004193795326006183 -0.9998988804214491 3.7589861925769266
-  position 84.43468901391373 -47.7592821573016 1.252465226060392
+  orientation -0.030993883715173032 -0.011711108924640333 0.9994509638296447 3.855591103178504
+  position 128.71331929840414 293.9173823407621 6.246046498700753
   near 3
 }
 TexturedBackground {
@@ -837,6 +837,8 @@ Road {
     "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/road/protos/textures/road_line_triangle.png"
   ]
   splineSubdivision 0
+  roadBoundingObject TRUE
+  rightBorderBoundingObject TRUE
 }
 PedestrianCrossing {
   translation 44.941703 187.160659 -0.07
@@ -1236,6 +1238,8 @@ Road {
     "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/road/protos/textures/road_line_triangle.png"
   ]
   splineSubdivision 0
+  roadBoundingObject TRUE
+  rightBorderBoundingObject TRUE
 }
 PedestrianCrossing {
   translation 66.691925 -42.119979 -0.07
@@ -6057,8 +6061,8 @@ DEF SUMO_VEHICLE31 Solid {
   name "SUMO vehicle 31"
 }
 BmwX5 {
-  translation 67.8634 -37.1075 0.482277
-  rotation -0.015202406960422963 -0.0064770829655328346 0.9998634577875457 -2.0957453071795866
+  translation 103.935 277.497 0.24
+  rotation 5.82423e-09 -9.58979e-09 1 -2.1859003061004256
   sensorsSlotFront [
     Camera {
       name "cameraFront"

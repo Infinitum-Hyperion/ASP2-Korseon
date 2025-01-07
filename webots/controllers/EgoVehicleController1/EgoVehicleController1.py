@@ -20,7 +20,7 @@ from controller import Lidar
 def onMsg(payload: dict[str, object]) -> None:
     pass
 
-lcb = LCB(onMsg, '0.0.0.0', '8080')
+# lcb = LCB(onMsg, '0.0.0.0', '8080')
 driver = Driver()
 
 class VehicleState:
@@ -92,18 +92,31 @@ def simulatorLoop():
     print(f"Step duration: {timestep}")
     timesteps: int = 0
     vstate = VehicleState(timestep)
-
+    driver.setSteeringAngle(0)
+    driver.setCruisingSpeed(20)
+    data = {}
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
         while driver.step() != -1:
             timesteps += 1
 
             print(f"Step #{timesteps}")
-            if (timesteps == 80):
+            """ if (timesteps == 80):
                 lcb.send('asp2-korseon.korseon-main', {'source': 'asp2-korseon.vehicle-controller', **vstate.snapshot()})
             if (timesteps % 50 == 0):
                 lcb.send('asp2-korseon.korseon-main', {'source': 'asp2-korseon.vehicle-controller', **vstate.navUpdate()})
-
+             """
+            if (timesteps % 40 == 0):
+                # img = vstate.getImg()
+                # img.save(f'timestep_{timesteps}.png')
+                data[timesteps] = vstate.getDash()
+            if (timesteps == 160):
+                driver.setSteeringAngle(-0.01)
+            if (timesteps == 280):
+                driver.setSteeringAngle(0)
+            if (timesteps == 500):
+                print(data)
+            
     pass
 
 def main():

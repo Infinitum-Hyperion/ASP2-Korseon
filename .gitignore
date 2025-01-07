@@ -4,3 +4,6 @@ webots/controllers/EgoVehicleController1/venv/bin
 webots/controllers/GPS_Experiment/venv/lib
 webots/controllers/GPS_Experiment/venv/bin
 webots/utils/configs.sh
+webots/controllers/EgoVehicleController1/straight_0
+webots/controllers/EgoVehicleController1/curve_1
+webots/controllers/EgoVehicleController1/curve_2
